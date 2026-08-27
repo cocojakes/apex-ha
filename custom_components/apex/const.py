@@ -16,7 +16,7 @@ SWITCHES = {
     "gph" : {"icon": "mdi:waves-arrow-right"},
     "vortech" : {"icon": "mdi:pump"},
     "UNK" : {"icon": "mdi:help"}
-    }
+}
 
 FEED_CYCLES = [
     {"did": "1", "name": "Feed A", "type": "Feed"},
@@ -30,6 +30,7 @@ SENSORS = {
     "Temp": {"icon": "mdi:water-thermometer", "measurement": "°C"},
     "Cond": {"icon": "mdi:shaker-outline", "measurement": "ppt"},
     "in": {"icon": "mdi:ruler", "measurement": "in"},
+    "LLS": {"icon": "mdi:ruler", "measurement": "in"},
     "pH": {"icon": "mdi:test-tube", "measurement": " "},
     "ORP": {"icon": "mdi:test-tube", "measurement": "mV"},
     "digital": {"icon": "mdi:digital-ocean"},
