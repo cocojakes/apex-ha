@@ -13,7 +13,8 @@ from .const import DOMAIN, SENSORS, MEASUREMENTS, MANUAL_SENSORS
 
 _LOGGER = logging.getLogger(__name__)
 
-ADVANCED_SENSOR_TYPES = ["MXMLight|Ecotech|15G6P", "virtual", "variable", "cor|20"]
+OUTPUT_SENSOR_TYPES = ["dos", "variable", "virtual", "vortech", "iotaPump|Sicce|Syncra", "cor|20", "MXMLight|Ecotech|15G6P", "MXMLight|Ecotech|15G6PL"]
+ADVANCED_SENSOR_TYPES = ["virtual", "variable", "cor|20", "MXMLight|Ecotech|15G6P", "MXMLight|Ecotech|15G6PL"]
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -32,7 +33,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         sensor = ApexSensor(entry, value, config_entry.options)
         async_add_entities([sensor], True)
     for value in entry.data["outputs"]:
-        if value["type"] in ("dos", "variable", "virtual", "vortech", "iotaPump|Sicce|Syncra", "cor|20"):
+        if value["type"] in OUTPUT_SENSOR_TYPES:
             sensor = ApexSensor(entry, value, config_entry.options)
             async_add_entities([sensor], True)
             
@@ -136,7 +137,7 @@ class ApexSensor(ApexEntity, SensorEntity):
                         return value
                     if self.sensor["type"] == "iotaPump|Sicce|Syncra":
                         return value
-                    if self.sensor["type"] == "virtual" or self.sensor["type"] == "variable" or self.sensor["type"] == "cor|20":
+                    if self.sensor["type"] in ADVANCED_SENSOR_TYPES:
                         if "config" in self.coordinator.data:
                             config_data = self.coordinator.data["config"]
                             if "oconf" in config_data:

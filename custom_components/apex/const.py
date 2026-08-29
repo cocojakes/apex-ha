@@ -15,7 +15,9 @@ SWITCHES = {
     "Feed" :  {"icon": "mdi:shaker"},
     "gph" : {"icon": "mdi:waves-arrow-right"},
     "vortech" : {"icon": "mdi:pump"},
-    "UNK" : {"icon": "mdi:help"}
+    "UNK" : {"icon": "mdi:help"},
+    "MXMLight|Ecotech|15G6P": {"icon": "mdi:led-strip"},
+    "MXMLight|Ecotech|15G6PL": {"icon": "mdi:led-strip"}
 }
 
 FEED_CYCLES = [
@@ -48,7 +50,9 @@ SENSORS = {
     "feed" : {"icon": "mdi:timer", "measurement": "mins"},
     "gph" : {"icon": "mdi:waves-arrow-right", "measurement": "gph"},
     "vortech" : {"icon": "mdi:pump"},
-    "UNK" : {"icon": "mdi:help"}
+    "UNK" : {"icon": "mdi:help"},
+    "MXMLight|Ecotech|15G6P": {"icon": "mdi:led-strip", "measurement": "%"},
+    "MXMLight|Ecotech|15G6PL": {"icon": "mdi:led-strip", "measurement": "%"}
 }
 
 MANUAL_SENSORS = [
