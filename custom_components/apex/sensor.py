@@ -18,6 +18,9 @@ from .const import (
     TEMPERATURE_UNIT_DEFAULT,
     LENGTH_UNIT,
     LENGTH_UNIT_DEFAULT,
+    EXPOSURE_MODE,
+    EXPOSURE_MODE_BASIC,
+    BASIC_EXCLUDED_SENSOR_TYPES,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -37,20 +40,26 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     """Add the Entities from the config."""
     entry = hass.data[DOMAIN][config_entry.entry_id]
+    basic_mode = config_entry.options.get(EXPOSURE_MODE) == EXPOSURE_MODE_BASIC
 
     for value in entry.data["inputs"]:
+        if basic_mode and value["type"] in BASIC_EXCLUDED_SENSOR_TYPES:
+            continue
         sensor = ApexSensor(entry, value, config_entry.options)
         async_add_entities([sensor], True)
     for value in entry.data["outputs"]:
+        if basic_mode and value["type"] in BASIC_EXCLUDED_SENSOR_TYPES:
+            continue
         if value["type"] in OUTPUT_SENSOR_TYPES:
             sensor = ApexSensor(entry, value, config_entry.options)
             async_add_entities([sensor], True)
 
 
     """Add Feed Status Remaining Time"""
-    for value in MANUAL_SENSORS:
-        sensor = ApexSensor(entry, value, config_entry.options)
-        async_add_entities([sensor], True)
+    if not basic_mode:
+        for value in MANUAL_SENSORS:
+            sensor = ApexSensor(entry, value, config_entry.options)
+            async_add_entities([sensor], True)
 
 
 class ApexSensor(ApexEntity, SensorEntity):
