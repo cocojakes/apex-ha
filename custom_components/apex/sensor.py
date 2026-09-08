@@ -21,6 +21,7 @@ from .const import (
     EXPOSURE_MODE,
     EXPOSURE_MODE_BASIC,
     BASIC_EXCLUDED_SENSOR_TYPES,
+    BASIC_EXCLUDED_OUTPUT_SENSOR_TYPES,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,7 +51,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     for value in entry.data["outputs"]:
         if basic_mode and value["type"] in BASIC_EXCLUDED_SENSOR_TYPES:
             continue
-        if value["type"] in OUTPUT_SENSOR_TYPES:
+        if (
+            value["type"] in OUTPUT_SENSOR_TYPES
+            and not (
+                basic_mode and value["type"] in BASIC_EXCLUDED_OUTPUT_SENSOR_TYPES
+            )
+        ):
             sensor = ApexSensor(entry, value, config_entry.options)
             async_add_entities([sensor], True)
 
