@@ -36,7 +36,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if value["type"] in OUTPUT_SENSOR_TYPES:
             sensor = ApexSensor(entry, value, config_entry.options)
             async_add_entities([sensor], True)
-            
+
 
     """Add Feed Status Remaining Time"""
     for value in MANUAL_SENSORS:
@@ -126,7 +126,7 @@ class ApexSensor(ApexEntity, SensorEntity):
                                     # _LOGGER.debug(f"get_value[state:variable]: {self.sensor|value}")
                                     if "intensity" in value:
                                         return value["intensity"]
-                    
+
         if ftype == "attributes":
             for value in self.coordinator.data["inputs"]:
                 if value["did"] == self.sensor["did"]:
@@ -148,20 +148,20 @@ class ApexSensor(ApexEntity, SensorEntity):
                                 return value
                         else:
                             return value
-    
+
     def process_prog(self, prog):
         if len(prog) > 255:
             return None
-        
+
         if "Set PF" in prog:
             return prog
-        
-        test = re.findall("Set\s[^\d]*(\d+)", prog)
+
+        test = re.findall(r"Set\s[^\d]*(\d+)", prog)
         if test:
             _LOGGER.debug(test[0])
             return int(test[0])
-        
-        test = re.findall("tdata\s[\d,:]*", prog)
+
+        test = re.findall(r"tdata\s[\d,:]*", prog)
         if test:
             # tdata is basically set over time, so first we need to get the current time and compare it to the two closest
             # points available. If there's only 1 point, we know it's a constant value.
@@ -169,22 +169,22 @@ class ApexSensor(ApexEntity, SensorEntity):
                 # Example with a constant pump: "prog": "Fallback OFF \ntdata 18:29:00,0,0,75,0,0,0,0,0,0,0,0,0,0\n",
                 values = test[0].split(',')
                 return values[3]
-            
+
             # More than 1 point, now to determine the time and value
             current_time = datetime.now().time()
             curr_frame = None
             next_frame = None
-            
+
             for line in test:
                 split_line = line.split(',')
                 line_time = datetime.strptime(split_line[0], "tdata %H:%M:%S").time()
-                
+
                 if current_time >= line_time:
                     curr_frame = split_line
                 elif next_frame is None:
                     next_frame = split_line
                     break
-            
+
             # If we hit one of these scenarios, it means we're outside the time range, which means the value
             # is going to simply be whatever it is in the first or final frame
             if curr_frame is None:
@@ -210,9 +210,9 @@ class ApexSensor(ApexEntity, SensorEntity):
             percent_distance = curr_time_pos / total_time_diff
             offset = (next_frame_num - curr_frame_num) * percent_distance
             return curr_frame_num + offset
-        
+
         return prog
-    
+
     @property
     def name(self):
         return "apex_" + self.sensor["name"]
