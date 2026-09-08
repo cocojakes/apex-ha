@@ -13,7 +13,11 @@
                 "data": {
                     "username": "Apex Controller Username",
                     "password": "Apex Controller Password",
-                    "deviceip": "Apex Controller IP"
+                    "deviceip": "Apex Controller IP",
+                    "exposure_mode": "Entity exposure"
+                },
+                "data_description": {
+                    "exposure_mode": "Basic shows the main physical equipment and readings, while Advanced exposes every available Apex entity."
                 }
             }
         }
@@ -24,7 +28,11 @@
                 "data": {
                     "update_interval": "Interval to poll Controller (Seconds)",
                     "temperature_unit": "Temperature unit",
-                    "length_unit": "Length unit"
+                    "length_unit": "Length unit",
+                    "exposure_mode": "Entity exposure"
+                },
+                "data_description": {
+                    "exposure_mode": "Basic shows the main physical equipment and readings, while Advanced exposes every available Apex entity."
                 },
                 "description": "Configure Controller Options"
             }
