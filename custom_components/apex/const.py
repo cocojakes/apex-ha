@@ -74,3 +74,15 @@ TEMPERATURE_UNITS = ("°C", "°F")
 LENGTH_UNIT = "length_unit"
 LENGTH_UNIT_DEFAULT = "in"
 LENGTH_UNITS = ("in", "cm")
+
+EXPOSURE_MODE = "exposure_mode"
+EXPOSURE_MODE_BASIC = "basic"
+EXPOSURE_MODE_ADVANCED = "advanced"
+EXPOSURE_MODE_DEFAULT = EXPOSURE_MODE_ADVANCED
+EXPOSURE_MODES = (EXPOSURE_MODE_BASIC, EXPOSURE_MODE_ADVANCED)
+
+# Basic mode keeps the hardware-focused view compact. The Apex status API does
+# not expose Fusion's per-tile visibility setting, so this deliberately uses
+# stable device categories instead of guessing from entity names.
+BASIC_OUTLET_TYPES = ("outlet",)
+BASIC_EXCLUDED_SENSOR_TYPES = ("Amps", "pwr", "volts")
