@@ -17,6 +17,9 @@ from .const import (  # pylint:disable=unused-import
     LENGTH_UNIT,
     LENGTH_UNIT_DEFAULT,
     LENGTH_UNITS,
+    EXPOSURE_MODE,
+    EXPOSURE_MODE_DEFAULT,
+    EXPOSURE_MODES,
 )
 from .apex import Apex
 
@@ -108,6 +111,12 @@ class OptionsFlow(config_entries.OptionsFlow):
                 LENGTH_UNIT,
                 default=self.config_entry.options.get(LENGTH_UNIT, LENGTH_UNIT_DEFAULT),
             ): vol.In(LENGTH_UNITS),
+            vol.Optional(
+                EXPOSURE_MODE,
+                default=self.config_entry.options.get(
+                    EXPOSURE_MODE, EXPOSURE_MODE_DEFAULT
+                ),
+            ): vol.In(EXPOSURE_MODES),
         }
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(options))
