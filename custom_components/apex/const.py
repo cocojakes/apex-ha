@@ -68,9 +68,24 @@ UPDATE_INTERVAL = "update_interval"
 UPDATE_INTERVAL_DEFAULT = 60
 
 TEMPERATURE_UNIT = "temperature_unit"
-TEMPERATURE_UNIT_DEFAULT = "°C"
+TEMPERATURE_UNIT_DEFAULT = "°F"
 TEMPERATURE_UNITS = ("°C", "°F")
 
 LENGTH_UNIT = "length_unit"
 LENGTH_UNIT_DEFAULT = "in"
 LENGTH_UNITS = ("in", "cm")
+
+EXPOSURE_MODE = "exposure_mode"
+EXPOSURE_MODE_BASIC = "basic"
+EXPOSURE_MODE_ADVANCED = "advanced"
+EXPOSURE_MODE_DEFAULT = EXPOSURE_MODE_ADVANCED
+EXPOSURE_MODES = (EXPOSURE_MODE_BASIC, EXPOSURE_MODE_ADVANCED)
+
+# Basic mode keeps the hardware-focused view compact. The Apex status API does
+# not expose Fusion's per-tile visibility setting, so this deliberately uses
+# stable device categories instead of guessing from entity names. This retains
+# physical outlets and attached hardware (for example 24V, DOS, lights, and
+# pumps) while omitting controller-only outputs.
+BASIC_EXCLUDED_OUTPUT_TYPES = ("alert", "virtual", "selector", "variable")
+BASIC_EXCLUDED_SENSOR_TYPES = ("Amps", "pwr", "volts")
+BASIC_EXCLUDED_OUTPUT_SENSOR_TYPES = ("virtual", "variable")

@@ -17,6 +17,9 @@ from .const import (  # pylint:disable=unused-import
     LENGTH_UNIT,
     LENGTH_UNIT_DEFAULT,
     LENGTH_UNITS,
+    EXPOSURE_MODE,
+    EXPOSURE_MODE_DEFAULT,
+    EXPOSURE_MODES,
 )
 from .apex import Apex
 
@@ -27,6 +30,9 @@ DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
         vol.Required(DEVICEIP): str,
+        vol.Required(EXPOSURE_MODE, default=EXPOSURE_MODE_DEFAULT): vol.In(
+            EXPOSURE_MODES
+        ),
     }
 )
 
@@ -63,8 +69,17 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input is not None:
             try:
-                info = await validate_input(self.hass, user_input)
-                return self.async_create_entry(title=info["title"], data=user_input)
+                connection_data = {
+                    CONF_USERNAME: user_input[CONF_USERNAME],
+                    CONF_PASSWORD: user_input[CONF_PASSWORD],
+                    DEVICEIP: user_input[DEVICEIP],
+                }
+                info = await validate_input(self.hass, connection_data)
+                return self.async_create_entry(
+                    title=info["title"],
+                    data=connection_data,
+                    options={EXPOSURE_MODE: user_input[EXPOSURE_MODE]},
+                )
             except CannotConnect:
                 print("EXCEPT")
                 errors["base"] = "cannot_connect"
@@ -108,6 +123,12 @@ class OptionsFlow(config_entries.OptionsFlow):
                 LENGTH_UNIT,
                 default=self.config_entry.options.get(LENGTH_UNIT, LENGTH_UNIT_DEFAULT),
             ): vol.In(LENGTH_UNITS),
+            vol.Optional(
+                EXPOSURE_MODE,
+                default=self.config_entry.options.get(
+                    EXPOSURE_MODE, EXPOSURE_MODE_DEFAULT
+                ),
+            ): vol.In(EXPOSURE_MODES),
         }
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(options))
