@@ -9,7 +9,7 @@ from .const import (
     FEED_CYCLES,
     EXPOSURE_MODE,
     EXPOSURE_MODE_BASIC,
-    BASIC_OUTLET_TYPES,
+    BASIC_EXCLUDED_OUTPUT_TYPES,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     
     """Loop through and add all avaliable outputs"""
     for value in entry.data["outputs"]:
-        if basic_mode and value["type"] not in BASIC_OUTLET_TYPES:
+        if basic_mode and value["type"] in BASIC_EXCLUDED_OUTPUT_TYPES:
             continue
         sw = Switch(entry, value, config_entry.options)
         async_add_entities([sw], False)
