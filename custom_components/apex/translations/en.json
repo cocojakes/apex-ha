@@ -22,7 +22,9 @@
         "step": {
             "init": {
                 "data": {
-                    "update_interval": "Interval to poll Controller (Seconds)"
+                    "update_interval": "Interval to poll Controller (Seconds)",
+                    "temperature_unit": "Temperature unit",
+                    "length_unit": "Length unit"
                 },
                 "description": "Configure Controller Options"
             }

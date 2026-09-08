@@ -9,8 +9,14 @@ from homeassistant.core import callback
 from .const import (  # pylint:disable=unused-import
     DOMAIN, 
     DEVICEIP,
-    UPDATE_INTERVAL, 
-    UPDATE_INTERVAL_DEFAULT
+    UPDATE_INTERVAL,
+    UPDATE_INTERVAL_DEFAULT,
+    TEMPERATURE_UNIT,
+    TEMPERATURE_UNIT_DEFAULT,
+    TEMPERATURE_UNITS,
+    LENGTH_UNIT,
+    LENGTH_UNIT_DEFAULT,
+    LENGTH_UNITS,
 )
 from .apex import Apex
 
@@ -92,6 +98,16 @@ class OptionsFlow(config_entries.OptionsFlow):
                     UPDATE_INTERVAL, UPDATE_INTERVAL_DEFAULT
                 ),
             ): int,
+            vol.Optional(
+                TEMPERATURE_UNIT,
+                default=self.config_entry.options.get(
+                    TEMPERATURE_UNIT, TEMPERATURE_UNIT_DEFAULT
+                ),
+            ): vol.In(TEMPERATURE_UNITS),
+            vol.Optional(
+                LENGTH_UNIT,
+                default=self.config_entry.options.get(LENGTH_UNIT, LENGTH_UNIT_DEFAULT),
+            ): vol.In(LENGTH_UNITS),
         }
 
         return self.async_show_form(step_id="init", data_schema=vol.Schema(options))

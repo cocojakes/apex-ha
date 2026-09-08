@@ -24,7 +24,7 @@ Older versions of the Apex controller don't support the rest API , however basic
 
 ## Options
 
-You can set the update interval that the integration polls the controller (in seconds). Be aware you will need to reload the integration once updating options for this to take affect.
+You can set the update interval that the integration polls the controller (in seconds), plus temperature (°C/°F) and length (in/cm) display units independently. Be aware you will need to reload the integration once updating options for this to take affect.
 
 This is a community-built integration. It is not supported by or affiliated with Neptune Systems.
 
