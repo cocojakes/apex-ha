@@ -30,6 +30,9 @@ DATA_SCHEMA = vol.Schema(
         vol.Required(CONF_USERNAME): str,
         vol.Required(CONF_PASSWORD): str,
         vol.Required(DEVICEIP): str,
+        vol.Required(EXPOSURE_MODE, default=EXPOSURE_MODE_DEFAULT): vol.In(
+            EXPOSURE_MODES
+        ),
     }
 )
 
@@ -66,8 +69,17 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors = {}
         if user_input is not None:
             try:
-                info = await validate_input(self.hass, user_input)
-                return self.async_create_entry(title=info["title"], data=user_input)
+                connection_data = {
+                    CONF_USERNAME: user_input[CONF_USERNAME],
+                    CONF_PASSWORD: user_input[CONF_PASSWORD],
+                    DEVICEIP: user_input[DEVICEIP],
+                }
+                info = await validate_input(self.hass, connection_data)
+                return self.async_create_entry(
+                    title=info["title"],
+                    data=connection_data,
+                    options={EXPOSURE_MODE: user_input[EXPOSURE_MODE]},
+                )
             except CannotConnect:
                 print("EXCEPT")
                 errors["base"] = "cannot_connect"
