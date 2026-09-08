@@ -3,7 +3,14 @@ import logging
 from homeassistant.components.switch import SwitchEntity
 
 from . import ApexEntity
-from .const import DOMAIN, SWITCHES, FEED_CYCLES
+from .const import (
+    DOMAIN,
+    SWITCHES,
+    FEED_CYCLES,
+    EXPOSURE_MODE,
+    EXPOSURE_MODE_BASIC,
+    BASIC_OUTLET_TYPES,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -11,14 +18,19 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """Add the Switch from the config."""
     entry = hass.data[DOMAIN][config_entry.entry_id]
+    basic_mode = config_entry.options.get(EXPOSURE_MODE) == EXPOSURE_MODE_BASIC
     
     """Loop through and add all avaliable outputs"""
     for value in entry.data["outputs"]:
+        if basic_mode and value["type"] not in BASIC_OUTLET_TYPES:
+            continue
         sw = Switch(entry, value, config_entry.options)
         async_add_entities([sw], False)
 
     """Add Feed Cycle Switches"""
     for value in FEED_CYCLES:
+        if basic_mode and value["did"] != "1":
+            continue
         _LOGGER.debug(value)
         sw = Switch(entry, value, config_entry.options)
         async_add_entities([sw], False)
