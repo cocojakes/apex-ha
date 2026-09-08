@@ -9,7 +9,16 @@ from homeassistant.components.sensor import (
 )
 
 from . import ApexEntity
-from .const import DOMAIN, SENSORS, MEASUREMENTS, MANUAL_SENSORS
+from .const import (
+    DOMAIN,
+    SENSORS,
+    MEASUREMENTS,
+    MANUAL_SENSORS,
+    TEMPERATURE_UNIT,
+    TEMPERATURE_UNIT_DEFAULT,
+    LENGTH_UNIT,
+    LENGTH_UNIT_DEFAULT,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -102,7 +111,7 @@ class ApexSensor(ApexEntity, SensorEntity):
                     return 0
             for value in self.coordinator.data["inputs"]:
                 if value["did"] == self.sensor["did"]:
-                    return value["value"]
+                    return self._convert_value(value["value"])
             for value in self.coordinator.data["outputs"]:
                 if value["did"] == self.sensor["did"]:
                     if self.sensor["type"] == "dos":
@@ -229,8 +238,7 @@ class ApexSensor(ApexEntity, SensorEntity):
     def extra_state_attributes(self):
         return self.get_value("attributes")
 
-    @property
-    def unit_of_measurement(self):
+    def _source_unit(self):
         if "iconf" in self.coordinator.data["config"]:
             for value in self.coordinator.data["config"]["iconf"]:
                 if value["did"] == self.sensor["did"]:
@@ -239,11 +247,40 @@ class ApexSensor(ApexEntity, SensorEntity):
                             return MEASUREMENTS[value["extra"]["range"]]
         if self.sensor["type"] in SENSORS:
             if "measurement" in SENSORS[self.sensor["type"]]:
-                if self.sensor["type"] == "Temp":
-                    return _SYSTEM_TEMP_UNIT
-                else:
-                    return SENSORS[self.sensor["type"]]["measurement"]
+                return SENSORS[self.sensor["type"]]["measurement"]
         return None
+
+    def _target_unit(self, source_unit):
+        if source_unit in ("°C", "°F"):
+            return self.options.get(TEMPERATURE_UNIT, TEMPERATURE_UNIT_DEFAULT)
+        if source_unit in ("in", "cm"):
+            return self.options.get(LENGTH_UNIT, LENGTH_UNIT_DEFAULT)
+        return source_unit
+
+    def _convert_value(self, value):
+        source_unit = self._source_unit()
+        target_unit = self._target_unit(source_unit)
+        if source_unit == target_unit:
+            return value
+
+        try:
+            numeric_value = float(value)
+        except (TypeError, ValueError):
+            return value
+
+        if source_unit == "°C" and target_unit == "°F":
+            return round((numeric_value * 9 / 5) + 32, 2)
+        if source_unit == "°F" and target_unit == "°C":
+            return round((numeric_value - 32) * 5 / 9, 2)
+        if source_unit == "in" and target_unit == "cm":
+            return round(numeric_value * 2.54, 2)
+        if source_unit == "cm" and target_unit == "in":
+            return round(numeric_value / 2.54, 2)
+        return value
+
+    @property
+    def unit_of_measurement(self):
+        return self._target_unit(self._source_unit())
 
     @property
     def state_class(self):

@@ -66,3 +66,11 @@ MEASUREMENTS = {
 
 UPDATE_INTERVAL = "update_interval"
 UPDATE_INTERVAL_DEFAULT = 60
+
+TEMPERATURE_UNIT = "temperature_unit"
+TEMPERATURE_UNIT_DEFAULT = "°C"
+TEMPERATURE_UNITS = ("°C", "°F")
+
+LENGTH_UNIT = "length_unit"
+LENGTH_UNIT_DEFAULT = "in"
+LENGTH_UNITS = ("in", "cm")
