@@ -4,13 +4,17 @@ on:
   pull_request:
   schedule:
     - cron: '0 0 * * *'
+
+permissions:
+  contents: read
+
 jobs:
   hacs:
     runs-on: "ubuntu-latest"
     name: HACS
     steps:
       - name: Check out the repository
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
 
       - name: HACS validation
         uses: "hacs/action@22.5.0"
@@ -22,8 +26,7 @@ jobs:
     name: Hassfest
     steps:
       - name: Check out the repository
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
 
       - name: Hassfest validation
         uses: "home-assistant/actions/hassfest@master"
-
